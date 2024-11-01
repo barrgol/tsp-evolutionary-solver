@@ -113,8 +113,21 @@ int main()
     sf::Font font;
     if (!font.loadFromFile("res/cour.ttf"))
     {
-        std::cerr << "Error loading font cour.ttf" << std::endl;
+        std::cerr << "Error while loading the font 'cour.ttf'" << std::endl;
+        return EXIT_FAILURE;
     }
+
+    // Load the background
+    // Source: https://commons.wikimedia.org/wiki/File:Template_europe_map.png
+    // Author: San Jose, 2 April 2006
+    sf::Texture europeMap;
+    if (!europeMap.loadFromFile("res/background.png")) {
+        std::cerr << "Error while loading 'background.png'" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    sf::Sprite background;
+    background.setTexture(europeMap);
 
     // Set a random seed
     std::srand(std::time(NULL));
@@ -129,10 +142,9 @@ int main()
 
     while (window.isOpen())
     {   
-        // Process the events
         processEvents(window);
 
-        // Draw TSP
+        window.draw(background);
         tnr.render(window);
         
         window.display();
