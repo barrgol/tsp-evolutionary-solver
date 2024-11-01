@@ -7,48 +7,9 @@
 #include "events.hpp"
 #include "city.hpp"
 #include "network.hpp"
+#include "renderer.hpp"
 
-const int NUM_NODES = 10;
-
-//struct NodeRender {
-//    sf::CircleShape shape;
-//    sf::Text label;
-//
-//    NodeRender(Node& n, sf::Font& font) {
-//        this->shape = sf::CircleShape(conf::NODE_RADIUS);
-//        this->shape.setPosition(n.position);
-//        if (n.id == 0) {
-//            this->shape.setFillColor(sf::Color::Green);
-//        } else {
-//            this->shape.setFillColor(sf::Color::Red);
-//        }
-//
-//        this->label = sf::Text(n.name, font, conf::LABEL_SIZE);
-//        label.setPosition(this->shape.getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, 0.0f });
-//        label.setFillColor(sf::Color::Black);
-//    }
-//
-//    void render(sf::RenderWindow& window) {
-//        window.draw(this->shape);
-//        window.draw(this->label);
-//    }
-//};
-//
-//struct TSPNetworkRender {
-//    std::vector<NodeRender> nodeRenders;
-//
-//    TSPNetworkRender(TSPNetwork& tn, sf::Font& font) {
-//        for (Node &n : tn.nodes) {
-//            nodeRenders.push_back(NodeRender(n, font));
-//        }
-//    }
-//
-//    void render(sf::RenderWindow& window) {
-//        for (NodeRender& nr : this->nodeRenders) {
-//            nr.render(window);
-//        }
-//    }
-//};
+const int NUM_NODES = 16;
 
 int main()
 {
@@ -58,15 +19,14 @@ int main()
 
     // Load the font
     sf::Font font;
-    if (!font.loadFromFile("res/cour.ttf"))
+    if (!font.loadFromFile("res/arialbd.ttf"))
     {
-        std::cerr << "Error: Could not open 'cour.ttf'" << std::endl;
+        std::cerr << "Error: Could not open 'arialbd.ttf'" << std::endl;
         return EXIT_FAILURE;
     }
 
     // Load the background
-    // Source: https://commons.wikimedia.org/wiki/File:Template_europe_map.png
-    // Author: San Jose, 2 April 2006
+    // Source: https://commons.m.wikimedia.org/wiki/File:Blank_Map_of_The_World_Equirectangular_Projection.png
     sf::Texture europeMap;
     if (!europeMap.loadFromFile("res/background.png")) {
         std::cerr << "Error: Could not open 'background.png'" << std::endl;
@@ -115,11 +75,17 @@ int main()
 
     std::cout << "START = " << start.name << std::endl;
 
+    TSPNetwork net = TSPNetwork(cities, start);
+
+    // Initialize Renderer
+    Renderer r = Renderer(net, font);
+
     while (window.isOpen())
     {   
         processEvents(window);
 
         window.draw(background);
+        r.render(window);
         
         window.display();
     }
