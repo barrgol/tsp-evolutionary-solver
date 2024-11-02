@@ -15,11 +15,13 @@ namespace conf
 	const float NODE_RADIUS = 5.0f;
 	const unsigned int LABEL_SIZE = 16;
 
+	const float FREEZE_DURATION_MS = 20.0f;
+
 	// Logic configuration
 	const int NUM_NODES = 32;
 
 	// Evolutionary solver configuration
-	const int NGEN = 1000;					// number of generations
+	const int NGEN = 500;					// number of generations
 	const int POPULATION_SIZE = 50;			// number of individuals
 	const int K = 5;						// tournament size
 	const float P_M = 0.8f;					// probability of mutation

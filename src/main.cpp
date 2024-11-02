@@ -62,11 +62,20 @@ int main()
     // Initialize Renderer
     Renderer r = Renderer(solver, font);
 
+
+    window.draw(background);
+    r.render(window);
+
+    window.display();
+
+    sf::Clock clock;
+    while (clock.getElapsedTime().asSeconds() <= 5.0f) {};
+
     while (window.isOpen())
     {   
         processEvents(window);
 
-        if (ngen < conf::NGEN) {
+        if (solver.ngen < conf::NGEN) {
             solver.step();
             ngen++;
         }
@@ -75,5 +84,8 @@ int main()
         r.render(window);
         
         window.display();
+
+        sf::Clock clock;
+        while (clock.getElapsedTime().asMilliseconds() <= conf::FREEZE_DURATION_MS) {};
     }
 }

@@ -9,6 +9,7 @@ using Permutation = std::vector<int>;
 const auto argmax = [](std::vector<int> v) { return std::distance(v.begin(), std::max_element(v.begin(), v.end())); };
 
 struct TSPSolver {
+	int ngen;
 	TSPNetwork& net;
 	std::vector<Permutation> population;
 	std::vector<int> pop_fitnesses;
@@ -20,7 +21,8 @@ struct TSPSolver {
 	std::uniform_int_distribution<> unif;
 
 	TSPSolver(TSPNetwork& net)
-		: net(net)
+		: ngen{0}
+		, net(net)
 		, population{ std::vector<Permutation>(conf::POPULATION_SIZE, Permutation(net.cities.size() - 1)) }
 		, unif{0, net.cities.size() - 1}
 	{
@@ -83,6 +85,8 @@ struct TSPSolver {
 			this->bestSolution = population[indmax];
 			this->bestFitness = pop_fitnesses[indmax];
 		}
+
+		this->ngen++;
 
 		return this->bestSolution;
 	}
