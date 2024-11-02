@@ -6,11 +6,15 @@
 #include "configuration.hpp"
 
 using Permutation = std::vector<int>;
+const auto argmax = [](std::vector<int> v) { return std::distance(v.begin(), std::max_element(v.begin(), v.end())); };
 
 struct TSPSolver {
 	TSPNetwork& net;
 	std::vector<Permutation> population;
+	std::vector<int> pop_fitnesses;
+
 	Permutation bestSolution;
+	int bestFitness;
 
 	std::mt19937 g;
 	std::uniform_int_distribution<> unif;
@@ -29,13 +33,58 @@ struct TSPSolver {
 			inversion_mutation(sol);
 		}
 
-		this->bestSolution = population[0];
+		this->pop_fitnesses = evaluate(population);
 
-		for (size_t i = 1; i < net.cities.size(); i++) {
-			std::cout << net.cities[i - 1].name << " - " << net.cities[i].name << ": " << net.cities[i - 1].distance(net.cities[i]) << " km" << std::endl;
+		int indmax = argmax(pop_fitnesses);
+		this->bestSolution = population[indmax];
+		this->bestFitness = pop_fitnesses[indmax];
+	}
+
+	Permutation step() {
+		std::uniform_real_distribution<> distr(0.0, 1.0f);
+
+		std::vector<Permutation> parents = tournament_selection(population, pop_fitnesses);
+		std::vector<Permutation> children(population.size());
+
+		for (size_t i = 1; i < parents.size(); i += 2) {
+			Permutation p1 = parents[i-1];
+			Permutation p2 = parents[i];
+			Permutation child(net.cities.size() - 1);
+
+			// Crossover
+			if (distr(g) < conf::P_C) {
+				child = pmx_crossover(p1, p2);
+			} else {
+				if (distr(g) < 0.5) {
+					std::copy(p1.begin(), p1.end(), child.begin());
+				}
+				else {
+					std::copy(p2.begin(), p2.end(), child.begin());
+				}
+			}
+
+			// Mutation
+			if (distr(g) < conf::P_M) {
+				inversion_mutation(child);
+			}
+
+			// Add child to the pool
+			children[i / 2] = child;
 		}
 
-		std::cout << "Path length = " << fitness(bestSolution) << " km" << std::endl;
+		// Complete generational replacement
+		std::copy(children.begin(), children.end(), population.begin());
+
+		// Return the best individual
+		this->pop_fitnesses = evaluate(population);
+		int indmax = argmax(pop_fitnesses);
+
+		if (pop_fitnesses[indmax] > bestFitness) {
+			this->bestSolution = population[indmax];
+			this->bestFitness = pop_fitnesses[indmax];
+		}
+
+		return this->bestSolution;
 	}
 
 	int fitness(Permutation& p) {
@@ -45,7 +94,7 @@ struct TSPSolver {
 		}
 		res += net.cities[p.back()].distance(net.cities[0]);
 
-		return res;
+		return -res;
 	}
 
 	std::vector<int> evaluate(std::vector<Permutation> individuals) {
@@ -115,19 +164,17 @@ struct TSPSolver {
 	}
 
 	std::vector<Permutation> tournament_selection(std::vector<Permutation> individuals, std::vector<int> fitnesses) {
-		std::uniform_int_distribution<> distr(0, individuals.size());
-		std::vector<Permutation> parents{};
-		std::vector<int> indices(0, conf::K);
-		std::vector<int> tourFitnesses(0, conf::K);
-
-		auto argmax = [](std::vector<int> v) { return std::distance(v.begin(), std::max_element(v.begin(), v.end())); };
+		std::uniform_int_distribution<> distr(0, individuals.size() - 1);
+		std::vector<Permutation> parents(2 * individuals.size());
+		std::vector<int> indices(conf::K, 0);
+		std::vector<int> tourFitnesses(conf::K, 0);
 
 		for (size_t i = 0; i < 2 * individuals.size(); i++) {
 			for (size_t j = 0; j < conf::K; j++) {
 				indices[j] = distr(g);
 				tourFitnesses[j] = fitnesses[indices[j]];
 			}
-			parents.push_back(individuals[indices[argmax(tourFitnesses)]]);
+			parents[i] = individuals[indices[argmax(tourFitnesses)]];
 		}
 
 		return parents;

@@ -11,7 +11,7 @@
 #include "solver.hpp"
 
 int main()
-{
+{    
     // Set a random seed
     std::srand(std::time(NULL));
 
@@ -57,6 +57,7 @@ int main()
     // Initialize the TSP network and problem solver
     TSPNetwork net = TSPNetwork(allCities, conf::NUM_NODES);
     TSPSolver solver = TSPSolver(net);
+    int ngen = 0;
 
     // Initialize Renderer
     Renderer r = Renderer(solver, font);
@@ -64,6 +65,11 @@ int main()
     while (window.isOpen())
     {   
         processEvents(window);
+
+        if (ngen < conf::NGEN) {
+            solver.step();
+            ngen++;
+        }
 
         window.draw(background);
         r.render(window);

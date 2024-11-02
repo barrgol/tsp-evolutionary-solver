@@ -16,7 +16,7 @@ namespace conf
 	const unsigned int LABEL_SIZE = 16;
 
 	// Logic configuration
-	const int NUM_NODES = 3;
+	const int NUM_NODES = 32;
 
 	// Evolutionary solver configuration
 	const int NGEN = 1000;					// number of generations
