@@ -9,6 +9,8 @@ struct City
 	float latitude;
 	float longitude;
 
+	City() {};
+
 	City(std::string country, std::string name, float latitude, float longitude)
 		: country{ country }
 		, name{ name }

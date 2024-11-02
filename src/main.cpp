@@ -8,11 +8,13 @@
 #include "city.hpp"
 #include "network.hpp"
 #include "renderer.hpp"
-
-const int NUM_NODES = 16;
+#include "solver.hpp"
 
 int main()
 {
+    // Set a random seed
+    std::srand(std::time(NULL));
+
     // Set up rendering window
     auto window = sf::RenderWindow{ { conf::WINDOW_SIZE.x, conf::WINDOW_SIZE.y }, "TSP Evolutionary solver" };
     window.setFramerateLimit(conf::MAX_FRAMERATE);
@@ -52,33 +54,12 @@ int main()
         allCities.push_back(City::parse(line));
     }
 
-    // Set a random seed
-    std::srand(std::time(NULL));
-
-    // Shuffle the city list to obtain random choice of cities
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    std::shuffle(allCities.begin(), allCities.end(), g);
-    std::vector<City> cities(allCities.begin(), allCities.begin() + NUM_NODES);
-
-    // Pick the random starting point
-    std::uniform_int_distribution<> unif(0, cities.size() - 1);
-    int randomIndex = unif(g);
-
-    City start = cities.at(randomIndex);
-
-    // Initialize the TSP network
-    for (City& c : cities) {
-        std::cout << c.name << std::endl;
-    }
-
-    std::cout << "START = " << start.name << std::endl;
-
-    TSPNetwork net = TSPNetwork(cities, start);
+    // Initialize the TSP network and problem solver
+    TSPNetwork net = TSPNetwork(allCities, conf::NUM_NODES);
+    TSPSolver solver = TSPSolver(net);
 
     // Initialize Renderer
-    Renderer r = Renderer(net, font);
+    Renderer r = Renderer(solver, font);
 
     while (window.isOpen())
     {   
