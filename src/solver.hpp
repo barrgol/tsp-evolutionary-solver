@@ -31,10 +31,30 @@ struct TSPSolver {
 
 		this->bestSolution = population[0];
 
-		// TODO: DELETE
-		Permutation test1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		Permutation test2 = { 9, 3, 7, 8, 2, 6, 5, 1, 4 };
-		pmx_crossover(test1, test2);
+		for (size_t i = 1; i < net.cities.size(); i++) {
+			std::cout << net.cities[i - 1].name << " - " << net.cities[i].name << ": " << net.cities[i - 1].distance(net.cities[i]) << " km" << std::endl;
+		}
+
+		std::cout << "Path length = " << fitness(bestSolution) << " km" << std::endl;
+	}
+
+	float fitness(Permutation& p) {
+		float res = net.cities[0].distance(net.cities[p[0]]);
+		for (size_t i = 1; i < p.size(); i++) {
+			res += net.cities[p[i - 1]].distance(net.cities[p[i]]);
+		}
+		res += net.cities[p.back()].distance(net.cities[0]);
+
+		return res;
+	}
+
+	std::vector<float> evaluate() {
+		std::vector<float> fitnesses(population.size(), 0.0f);
+		for (size_t i = 0; i < population.size(); i++) {
+			fitnesses[i] = fitness(population[i]);
+		}
+
+		return fitnesses;
 	}
 
 	void inversion_mutation(Permutation& p) {
@@ -93,6 +113,8 @@ struct TSPSolver {
 		
 		return child;
 	}
+
+
 
 
 };
