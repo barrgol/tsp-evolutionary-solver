@@ -45,7 +45,7 @@ struct City
 		return City(country, name, latitude, longitude);
 	}
 
-	float distance(City& c) {
+	int distance(City& c) {
 		// For converting degrees to radians
 		auto rad = [](float deg) { return deg * (std::numbers::pi_v<float> / 180.0f);  };
 

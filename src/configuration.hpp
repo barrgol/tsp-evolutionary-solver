@@ -19,6 +19,10 @@ namespace conf
 	const int NUM_NODES = 3;
 
 	// Evolutionary solver configuration
-	const int POPULATION_SIZE = 100;
+	const int NGEN = 1000;					// number of generations
+	const int POPULATION_SIZE = 50;			// number of individuals
+	const int K = 5;						// tournament size
+	const float P_M = 0.8f;					// probability of mutation
+	const float P_C = 1.0f;					// probability of crossover
 
 }

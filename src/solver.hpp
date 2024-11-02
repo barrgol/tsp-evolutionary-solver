@@ -38,8 +38,8 @@ struct TSPSolver {
 		std::cout << "Path length = " << fitness(bestSolution) << " km" << std::endl;
 	}
 
-	float fitness(Permutation& p) {
-		float res = net.cities[0].distance(net.cities[p[0]]);
+	int fitness(Permutation& p) {
+		int res = net.cities[0].distance(net.cities[p[0]]);
 		for (size_t i = 1; i < p.size(); i++) {
 			res += net.cities[p[i - 1]].distance(net.cities[p[i]]);
 		}
@@ -48,10 +48,10 @@ struct TSPSolver {
 		return res;
 	}
 
-	std::vector<float> evaluate() {
-		std::vector<float> fitnesses(population.size(), 0.0f);
-		for (size_t i = 0; i < population.size(); i++) {
-			fitnesses[i] = fitness(population[i]);
+	std::vector<int> evaluate(std::vector<Permutation> individuals) {
+		std::vector<int> fitnesses(individuals.size(), 0);
+		for (size_t i = 0; i < individuals.size(); i++) {
+			fitnesses[i] = fitness(individuals[i]);
 		}
 
 		return fitnesses;
@@ -114,7 +114,22 @@ struct TSPSolver {
 		return child;
 	}
 
+	std::vector<Permutation> tournament_selection(std::vector<Permutation> individuals, std::vector<int> fitnesses) {
+		std::uniform_int_distribution<> distr(0, individuals.size());
+		std::vector<Permutation> parents{};
+		std::vector<int> indices(0, conf::K);
+		std::vector<int> tourFitnesses(0, conf::K);
 
+		auto argmax = [](std::vector<int> v) { return std::distance(v.begin(), std::max_element(v.begin(), v.end())); };
 
+		for (size_t i = 0; i < 2 * individuals.size(); i++) {
+			for (size_t j = 0; j < conf::K; j++) {
+				indices[j] = distr(g);
+				tourFitnesses[j] = fitnesses[indices[j]];
+			}
+			parents.push_back(individuals[indices[argmax(tourFitnesses)]]);
+		}
 
+		return parents;
+	}
 };
