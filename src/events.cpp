@@ -1,7 +1,7 @@
 #include "events.hpp"
 
 
-void processEvents(sf::Window& window)
+void processEvents(sf::Window& window, bool& paused)
 {
     for (auto event = sf::Event{}; window.pollEvent(event);)
     {
@@ -14,6 +14,10 @@ void processEvents(sf::Window& window)
             if (event.key.code == sf::Keyboard::Escape)
             {
                 window.close();
+            }
+            else if (event.key.code == sf::Keyboard::Space)
+            {
+                paused = !paused;
             }
         }
     }

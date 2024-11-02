@@ -62,20 +62,18 @@ int main()
     // Initialize Renderer
     Renderer r = Renderer(solver, font);
 
-
     window.draw(background);
     r.render(window);
 
     window.display();
 
-    sf::Clock clock;
-    while (clock.getElapsedTime().asSeconds() <= 5.0f) {};
+    bool paused = true;
 
     while (window.isOpen())
     {   
-        processEvents(window);
+        processEvents(window, paused);
 
-        if (solver.ngen < conf::NGEN) {
+        if (!paused && solver.ngen < conf::NGEN) {
             solver.step();
             ngen++;
         }
