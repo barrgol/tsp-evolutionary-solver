@@ -28,12 +28,12 @@ struct Renderer
 
 			// Render the dot corresponding to the city location
 			nodes[i].setPosition({ lon, lat });
-			nodes[i].setFillColor(i == 0 ? sf::Color::Green : sf::Color::Blue);
+			nodes[i].setFillColor(i == 0 ? sf::Color{ 40, 150, 40 } : sf::Color::Blue);
 
 			// Render the label with a city name
 			labels.push_back(sf::Text(c.name, f, conf::LABEL_SIZE));
 			labels[i].setPosition(nodes[i].getPosition() + sf::Vector2f{ labels[i].getString().getSize() * (-4.5f), conf::NODE_RADIUS + 3.0f });
-			labels[i].setFillColor(i == 0 ? sf::Color::Green : sf::Color::Blue);
+			labels[i].setFillColor(i == 0 ? sf::Color{ 40, 150, 40 } : sf::Color::Blue);
 			labels[i].setStyle(sf::Text::Bold);
 		}
 
