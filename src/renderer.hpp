@@ -49,23 +49,23 @@ struct Renderer
 	}
 
 	void update() {
-		lines.front() = { sf::Vertex(nodes[0].getPosition(), sf::Color::Black),
-						  sf::Vertex(nodes[solver.bestSolution.front()].getPosition(), sf::Color::Black) };
+		lines.front() = { sf::Vertex(nodes[0].getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, conf::NODE_RADIUS / 2 }, sf::Color::Black),
+						  sf::Vertex(nodes[solver.bestSolution.front()].getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, conf::NODE_RADIUS / 2 }, sf::Color::Black) };
 		for (int i = 1; i < solver.bestSolution.size(); i++) {
-			lines[i] = { sf::Vertex(nodes[solver.bestSolution[i - 1]].getPosition(), sf::Color::Black),
-						 sf::Vertex(nodes[solver.bestSolution[i]].getPosition(), sf::Color::Black) };
+			lines[i] = { sf::Vertex(nodes[solver.bestSolution[i - 1]].getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, conf::NODE_RADIUS / 2 }, sf::Color::Black),
+						 sf::Vertex(nodes[solver.bestSolution[i]].getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, conf::NODE_RADIUS / 2 }, sf::Color::Black) };
 		}
-		lines.back() = { sf::Vertex(nodes[solver.bestSolution.back()].getPosition(), sf::Color::Black),
-						 sf::Vertex(nodes[0].getPosition(), sf::Color::Black) };
+		lines.back() = { sf::Vertex(nodes[solver.bestSolution.back()].getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, conf::NODE_RADIUS / 2 }, sf::Color::Black),
+						 sf::Vertex(nodes[0].getPosition() + sf::Vector2f{ conf::NODE_RADIUS / 2, conf::NODE_RADIUS / 2 }, sf::Color::Black) };
 	}
 
 	void render(sf::RenderWindow& context) {
-		// this->update();
+		this->update();
+		context.draw(lines.back().data(), 2, sf::Lines);
 		for (size_t i = 0; i < network.cities.size(); i++) {
+			context.draw(lines[i].data(), 2, sf::Lines);
 			context.draw(nodes[i]);
 			context.draw(labels[i]);
-			context.draw(lines[i].data(), 2, sf::Lines);
 		}
-		context.draw(lines.back().data(), 2, sf::Lines);
 	}
 };
