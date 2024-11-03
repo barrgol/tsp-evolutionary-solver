@@ -28,6 +28,10 @@ Numerical parameters listed in the table can be modified in `configuration.hpp` 
 
 # Demos
 
-https://github.com/user-attachments/assets/d785916e-9b62-4a0b-995b-ada50a35b1c5
+Simulation for 32 cities, population of 50 individuals and delay of 40 miliseconds between each generation. The result is definitely not optimal (edges Varna-Sofia and Bucharest-Athens cross) but it looks "good enough".
 
 https://github.com/user-attachments/assets/beb3e77b-6dbe-4537-bda3-a5d2139daf36
+
+Larger simulation with 48 cities, population of 200 individuals and a delay of 10 miliseconds. Plausible-looking result achieved in less than 200 generations.
+
+https://github.com/user-attachments/assets/1d609ca8-8749-4f0f-b749-f7ec66acea44
