@@ -21,13 +21,18 @@ struct TSPSolver {
 	std::uniform_int_distribution<> unif;
 
 	TSPSolver(TSPNetwork& net)
-		: ngen{0}
-		, net(net)
-		, population{ std::vector<Permutation>(conf::POPULATION_SIZE, Permutation(net.cities.size() - 1)) }
+		: net(net)
 		, unif{0, net.cities.size() - 1}
 	{
 		std::random_device rd;
 		this->g = std::mt19937(rd());
+
+		this->initialize();
+	}
+
+	void initialize() {
+		this->population = std::vector<Permutation>(conf::POPULATION_SIZE, Permutation(net.cities.size() - 1));
+		this->ngen = 0;
 
 		for (auto& sol : population) {
 			std::iota(sol.begin(), sol.end(), 1);

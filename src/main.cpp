@@ -69,9 +69,11 @@ int main()
 
     bool paused = true;
 
+    AppState state{ solver, paused };
+
     while (window.isOpen())
     {   
-        processEvents(window, paused);
+        processEvents(window, state);
 
         if (!paused && solver.ngen < conf::NGEN) {
             solver.step();

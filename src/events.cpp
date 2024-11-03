@@ -1,7 +1,7 @@
 #include "events.hpp"
 
 
-void processEvents(sf::Window& window, bool& paused)
+void processEvents(sf::Window& window, AppState& state)
 {
     for (auto event = sf::Event{}; window.pollEvent(event);)
     {
@@ -17,7 +17,12 @@ void processEvents(sf::Window& window, bool& paused)
             }
             else if (event.key.code == sf::Keyboard::Space)
             {
-                paused = !paused;
+                state.paused = !state.paused;
+            }
+            else if (event.key.code == sf::Keyboard::R)
+            {
+                state.paused = true;
+                state.solver.initialize();
             }
         }
     }
